@@ -248,7 +248,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="AdjustmentDetailsCell" textLabel="iVe-4d-SrN" detailTextLabel="jTl-rW-2EM" style="IBUITableViewCellStyleValue1" id="ZAd-Nn-fQ6">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="AdjustmentDetailsCell" textLabel="iVe-4d-SrN" detailTextLabel="jTl-rW-2EM" style="IBUITableViewCellStyleValue1" id="ZAd-Nn-fQ6">
                                 <rect key="frame" x="0.0" y="55.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ZAd-Nn-fQ6" id="NX2-J9-Mu8">
@@ -404,7 +404,7 @@
                                 <rect key="frame" x="0.0" y="339.5" width="414" height="413.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LocationQuantityCell" textLabel="ZeE-V1-S57" detailTextLabel="YAZ-CV-4sN" style="IBUITableViewCellStyleValue1" id="cGS-S5-XWv">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LocationQuantityCell" textLabel="ZeE-V1-S57" detailTextLabel="YAZ-CV-4sN" style="IBUITableViewCellStyleValue1" id="cGS-S5-XWv">
                                         <rect key="frame" x="0.0" y="28" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cGS-S5-XWv" id="yVB-fj-263">
@@ -1229,7 +1229,7 @@
                         <sections>
                             <tableViewSection id="S9T-iJ-iRx">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="N6S-pj-U1n">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="N6S-pj-U1n">
                                         <rect key="frame" x="0.0" y="35" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="N6S-pj-U1n" id="kh9-ai-Xyb">
@@ -1254,7 +1254,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="yy9-vR-NP1">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="yy9-vR-NP1">
                                         <rect key="frame" x="0.0" y="79" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yy9-vR-NP1" id="zdK-TS-4si">
@@ -1455,7 +1455,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="EditCategoryTableCell" id="bRl-GS-XAu" customClass="EditCategoryTableViewCell" customModule="Millerbernd_Inventory_Tracker" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="EditCategoryTableCell" id="bRl-GS-XAu" customClass="EditCategoryTableViewCell" customModule="Millerbernd_Inventory_Tracker" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bRl-GS-XAu" id="N1X-iR-HRa">
@@ -1463,21 +1463,21 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Category Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Xw8-JZ-34p">
-                                            <rect key="frame" x="20" y="0.0" width="234" height="43.5"/>
+                                            <rect key="frame" x="20" y="0.0" width="224" height="43.5"/>
                                             <nil key="textColor"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <textInputTraits key="textInputTraits"/>
                                             <connections>
                                                 <action selector="textFieldChanged:" destination="bRl-GS-XAu" eventType="editingChanged" id="MpH-NK-HUZ"/>
                                             </connections>
                                         </textField>
                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Min Qty: (Optional)" textAlignment="right" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="7Qf-eD-UTW">
-                                            <rect key="frame" x="254" y="0.0" width="140" height="43.5"/>
+                                            <rect key="frame" x="244" y="0.0" width="150" height="43.5"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="140" id="12w-zp-Kdl"/>
+                                                <constraint firstAttribute="width" constant="150" id="12w-zp-Kdl"/>
                                             </constraints>
                                             <nil key="textColor"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <textInputTraits key="textInputTraits"/>
                                             <connections>
                                                 <action selector="textFieldChanged:" destination="bRl-GS-XAu" eventType="editingChanged" id="1lG-Pz-3Ge"/>
@@ -1569,7 +1569,7 @@
     <inferredMetricsTieBreakers>
         <segue reference="Cui-40-3C1"/>
         <segue reference="oj3-A9-ruP"/>
-        <segue reference="GxG-qa-qf3"/>
+        <segue reference="ss0-qw-ryg"/>
         <segue reference="R80-ti-7tq"/>
         <segue reference="NA9-jA-Tts"/>
     </inferredMetricsTieBreakers>
