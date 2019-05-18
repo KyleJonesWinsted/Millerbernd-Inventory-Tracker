@@ -20,6 +20,7 @@ class ReportsTableViewController: UITableViewController, UISplitViewControllerDe
         super.viewDidLoad()
         
         splitViewController?.delegate = self
+        self.clearsSelectionOnViewWillAppear = true
         
         updateUI()
         
@@ -46,10 +47,6 @@ class ReportsTableViewController: UITableViewController, UISplitViewControllerDe
     
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
         return true
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     // MARK: Cell Configuration

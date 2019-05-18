@@ -20,6 +20,7 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
         
         splitViewController?.delegate = self
         updateItemQuantities()
+        self.clearsSelectionOnViewWillAppear = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: ItemController.itemsUpdatedNotification, object: nil)
     
@@ -41,8 +42,6 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 2 {
             tableView.moveRow(at: indexPath, to: IndexPath(row: 0, section: 2))
-        } else {
-            tableView.deselectRow(at: indexPath, animated: true)
         }
     }
     
