@@ -48,6 +48,7 @@ class CategoryController {
             if let data = data,
                 let categories = try? JSONDecoder().decode([Category].self, from: data) {
                 self.categories = categories
+                self.saveCategories()
             }
         }
         task.resume()

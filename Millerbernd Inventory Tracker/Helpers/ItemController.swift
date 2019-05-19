@@ -79,67 +79,6 @@ class ItemController {
     //MARK: HTTPS Networking
     
     
-    
-//    func putRemoteItems(item: Item?, completion: @escaping (Bool) -> Void) {
-//        var items = itemsBySKU
-//        if var item = item {
-//            while item.locations != item.locations.sorted() {
-//                for i in 1 ... item.locations.count - 1 {
-//                    let location1 = item.locations[i-1]
-//                    let location2 = item.locations[i]
-//                    let quantity2 = item.stockAtLocation[i]
-//                    if location2 < location1 {
-//                        item.locations.insert(location2, at: i-1)
-//                        item.locations.remove(at: i + 1)
-//                        item.stockAtLocation.insert(quantity2, at: i-1)
-//                        item.stockAtLocation.remove(at: i + 1)
-//                    }
-//                }
-//            }
-//
-//            for (index, stock) in item.stockAtLocation.enumerated().reversed() {
-//                if stock == 0 {
-//                    item.stockAtLocation.remove(at: index)
-//                    item.locations.remove(at: index)
-//                }
-//            }
-//            items[item.SKU] = item
-//        }
-//        let data: [Int:Item] = items
-//        var request = URLRequest(url: URL(string: "https://api.myjson.com/bins/jrf0g")!)
-//        request.httpMethod = "PUT"
-//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//        let jsonData = try? JSONEncoder().encode(data)
-//        request.httpBody = jsonData
-//        let task = URLSession.shared.dataTask(with: request) { (data,response,error) in
-//            if error == nil {
-//                completion(true)
-//            } else {
-//                completion(false)
-//            }
-//        }
-//        task.resume()
-//    }
-    
-    func deleteRemoteItem(itemSKU: Int, completion: @escaping (Bool) -> Void) {
-        var items = itemsBySKU
-        items.removeValue(forKey: itemSKU)
-        let data: [Int:Item] = items
-        var request = URLRequest(url: URL(string: "https://api.myjson.com/bins/jrf0g")!)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONEncoder().encode(data)
-        request.httpBody = jsonData
-        let task = URLSession.shared.dataTask(with: request) { (data,response,error) in
-            if error == nil {
-                completion(true)
-            } else {
-                completion(false)
-            }
-        }
-        task.resume()
-    }
-    
     func getRemoteItem() {
         var request = URLRequest(url: URL(string: "https://api.myjson.com/bins/jrf0g")!)
         request.httpMethod = "GET"

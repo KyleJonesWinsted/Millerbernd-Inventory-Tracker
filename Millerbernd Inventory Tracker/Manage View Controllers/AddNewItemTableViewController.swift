@@ -189,17 +189,10 @@ class AddNewItemTableViewController: UITableViewController, SelectCategoryTableD
     @IBAction func doneButtonPressed(_ sender: Any) {
         if let item = item {
             startBarButtonIndicator()
-            ItemController.shared.putRemoteItems(item: item) { (success) in
-                if success {
-                    ItemController.shared.addNew(item: item)
-                    ItemController.shared.addRecent(item: item)
-                    self.dismiss(animated: true, completion: nil)
-                } else {
-                    self.showNetworkFailureAlert()
-                }
-            }
-            
-        } 
+            ItemController.shared.addNew(item: item)
+            ItemController.shared.addRecent(item: item)
+            self.dismiss(animated: true, completion: nil)
+        }
         
     }
     
@@ -212,15 +205,8 @@ class AddNewItemTableViewController: UITableViewController, SelectCategoryTableD
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (_) in
             if let SKU = self.SKU {
-                ItemController.shared.deleteRemoteItem(itemSKU: SKU, completion: { (success) in
-                    self.startBarButtonIndicator()
-                    if success {
-                        ItemController.shared.deleteItem(withSKU: SKU)
-                        self.dismiss(animated: true, completion: nil)
-                    } else {
-                        self.showNetworkFailureAlert()
-                    }
-                })
+                ItemController.shared.deleteItem(withSKU: SKU)
+                self.dismiss(animated: true, completion: nil)
             } else {
                 self.dismiss(animated: true, completion: nil)
             }

@@ -118,7 +118,7 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
     //MARK: Networking UI Methods
     
     func showNetworkFailureAlert() {
-        let alert = UIAlertController(title: "No Internet Connection", message: "Unable to update item.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "A problem occured", message: "Unable to update item.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             self.stopBarButtonIndicator()
         }))
@@ -156,25 +156,15 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
     
     @IBAction func doneButtonPressed(_ sender: Any) {
         startBarButtonIndicator()
-        ItemController.shared.putRemoteItems(item: self.item) { (success) in
-            if success {
-                if let adjustment = self.createNewAdjustment() {
-                    AdjustmentController.shared.putRemoteAdjustments(adjustment: adjustment, completion: { (success) in
-                        if success {
-                            AdjustmentController.shared.addNew(adjustment: adjustment)
-                            ItemController.shared.adjustQuantities(for: self.item)
-                            ItemController.shared.saveItems()
-                            AdjustmentController.shared.saveAdjustments()
-                            self.dismiss(animated: true, completion: nil)
-                        } else {
-                            self.showNetworkFailureAlert()
-                        }
-                    })
-                }
-            } else {
-                self.showNetworkFailureAlert()
-            }
+        guard let adjustment = createNewAdjustment() else {
+            showNetworkFailureAlert()
+            return
         }
+        AdjustmentController.shared.addNew(adjustment: adjustment)
+        ItemController.shared.adjustQuantities(for: self.item)
+        ItemController.shared.saveItems()
+        AdjustmentController.shared.saveAdjustments()
+        dismiss(animated: true, completion: nil)
     }
     
     func createNewAdjustment() -> Adjustment? {

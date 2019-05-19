@@ -120,21 +120,8 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
             return
         }
         self.startBarButtonIndicator()
-        CategoryController.shared.putRemoteCategories(categories: categories) { (success) in
-            if success {
-                CategoryController.shared.modifyCategories(with: self.categories)
-                ItemController.shared.putRemoteItems(item: nil, completion: { (success) in
-                    if success {
-                        self.dismiss(animated: true, completion: nil)
-                    } else {
-                        self.showNetworkFailureAlert()
-                    }
-                })
-            } else {
-                self.showNetworkFailureAlert()
-            }
-        }
-        
+        CategoryController.shared.modifyCategories(with: self.categories)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func duplicatesFound() -> Bool {

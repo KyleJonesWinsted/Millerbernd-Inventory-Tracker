@@ -69,25 +69,6 @@ class AdjustmentController {
     
     //MARK: HTTPS Networking
     
-    func putRemoteAdjustments(adjustment: Adjustment, completion: @escaping (Bool) -> Void) {
-        var adjustments = allAdjustments
-        adjustments.append(adjustment)
-        let data: [Adjustment] = adjustments
-        var request = URLRequest(url: URL(string: "https://api.myjson.com/bins/l6uv4")!)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONEncoder().encode(data)
-        request.httpBody = jsonData
-        let task = URLSession.shared.dataTask(with: request) { (data,response,error) in
-            if error == nil {
-                completion(true)
-            } else {
-                completion(false)
-            }
-        }
-        task.resume()
-    }
-    
     func getRemoteAdjustments() {
         var request = URLRequest(url: URL(string: "https://api.myjson.com/bins/l6uv4")!)
         request.httpMethod = "GET"
@@ -95,7 +76,7 @@ class AdjustmentController {
             if let data = data,
                 let adjustments = try? JSONDecoder().decode([Adjustment].self, from: data) {
                 self.process(adjustments)
-                
+                self.saveAdjustments()
             }
         }
         task.resume()
