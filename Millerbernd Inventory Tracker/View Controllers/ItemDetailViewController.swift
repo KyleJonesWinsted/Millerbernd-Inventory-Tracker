@@ -42,24 +42,27 @@ class ItemDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     //MARK: Methods
     
     @objc func updateUI() {
-        detailsLabel.text = item.SKU != 0 ? item.details : "Select an Item"
-        manufacturerLabel.text = item.manufacturer
-        skuLabel.text = item.SKU != 0 ? item.SKU.description : ""
-        categoryLabel.text = item.category.name
-        if item.isBelowMinimumStock {
-            totalQuantityLabel.textColor = .red
-            totalQuantityLabel.font = .boldSystemFont(ofSize: 25.0)
+        DispatchQueue.main.async {
+            self.detailsLabel.text = self.item.SKU != 0 ? self.item.details : "Select an Item"
+            self.manufacturerLabel.text = self.item.manufacturer
+            self.skuLabel.text = self.item.SKU != 0 ? self.item.SKU.description : ""
+            self.categoryLabel.text = self.item.category.name
+            if self.item.isBelowMinimumStock {
+                self.totalQuantityLabel.textColor = .red
+                self.totalQuantityLabel.font = .boldSystemFont(ofSize: 25.0)
+            }
+            self.totalQuantityLabel.text = self.item.SKU != 0 ? self.item.totalQuantity.description : ""
+            self.locationsTableView.delegate = self
+            self.locationsTableView.dataSource = self
+            self.locationsTableView.tableFooterView = UIView()
+            if self.locationsTableView.contentSize.height < self.locationsTableView.frame.size.height {
+                self.locationsTableView.isScrollEnabled = false
+            } else {
+                self.locationsTableView.isScrollEnabled = true
+            }
+            self.locationsTableView.reloadData()
         }
-        totalQuantityLabel.text = item.SKU != 0 ? item.totalQuantity.description : ""
-        locationsTableView.delegate = self
-        locationsTableView.dataSource = self
-        locationsTableView.tableFooterView = UIView()
-        if locationsTableView.contentSize.height < locationsTableView.frame.size.height {
-            locationsTableView.isScrollEnabled = false
-        } else {
-            locationsTableView.isScrollEnabled = true
-        }
-        locationsTableView.reloadData()
+        
 
     }
     

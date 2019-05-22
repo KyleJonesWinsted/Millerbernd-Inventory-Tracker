@@ -42,7 +42,10 @@ class ReportsTableViewController: UITableViewController, UISplitViewControllerDe
     @objc func updateUI() {
         items = ItemController.shared.allItems()
         determineLowStockItems()
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+        
     }
     
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
