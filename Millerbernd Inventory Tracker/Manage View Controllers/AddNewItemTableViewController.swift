@@ -196,6 +196,8 @@ class AddNewItemTableViewController: UITableViewController, SelectCategoryTableD
                 case .success(let item):
                     ItemController.shared.addNew(item: item)
                     ItemController.shared.addRecent(item: item)
+                    ItemController.shared.saveItems()
+                    ItemController.shared.saveURLs()
                     self.dismiss(animated: true, completion: nil)
                 case .failure(let error):
                     self.showNetworkFailureAlert(error: error)
@@ -208,6 +210,7 @@ class AddNewItemTableViewController: UITableViewController, SelectCategoryTableD
                     ItemController.shared.append(uri: uri, forSKU: item.SKU)
                     ItemController.shared.addNew(item: item)
                     ItemController.shared.addRecent(item: item)
+                    ItemController.shared.saveURLs()
                     self.dismiss(animated: true, completion: nil)
                 case .failure(let error):
                     self.showNetworkFailureAlert(error: error)
@@ -232,6 +235,8 @@ class AddNewItemTableViewController: UITableViewController, SelectCategoryTableD
                 switch result{
                 case.success(let item):
                     ItemController.shared.deleteItem(withSKU: item.SKU)
+                    ItemController.shared.saveItems()
+                    ItemController.shared.saveURLs()
                     self.dismiss(animated: true, completion: nil)
                 case.failure(let error):
                     self.showNetworkFailureAlert(error: error)

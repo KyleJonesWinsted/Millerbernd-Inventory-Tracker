@@ -24,7 +24,12 @@ class CategoryController {
     
     //MARK: HTTPS Networking
     
-    func putRemoteCategories(categories: [Category], completion: @escaping (Bool) -> Void) {
+    enum NetworkError: Error {
+        case noConnection
+        case badURL
+    }
+    
+    func putRemoteCategories(categories: [Category], completion: @escaping (Result<[Category],NetworkError>) -> Void) {
         let data: [Category] = categories
         var request = URLRequest(url: URL(string: "https://api.myjson.com/bins/pybpc")!)
         request.httpMethod = "PUT"
@@ -33,9 +38,9 @@ class CategoryController {
         request.httpBody = jsonData
         let task = URLSession.shared.dataTask(with: request) { (data,response,error) in
             if error == nil {
-                completion(true)
+                completion(.success(categories))
             } else {
-                completion(false)
+                completion(.failure(.noConnection))
             }
         }
         task.resume()

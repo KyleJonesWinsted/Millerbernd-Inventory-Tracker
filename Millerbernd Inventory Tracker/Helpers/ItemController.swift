@@ -125,6 +125,30 @@ class ItemController {
         task.resume()
     }
     
+    func putAllItems(completion: @escaping (Result<Any?,NetworkError>) -> Void) {
+        let taskGroup = DispatchGroup()
+        var success: Bool = false
+        for item in itemsBySKU.values {
+            taskGroup.enter()
+            put(item: item) { (result) in
+                switch result {
+                case .success(_):
+                    success = true
+                case .failure(_):
+                    success = false
+                }
+                taskGroup.leave()
+            }
+        }
+        taskGroup.notify(queue: DispatchQueue.global()) {
+            if success {
+                completion(.success(nil))
+            } else {
+                completion(.failure(.noConnection))
+            }
+        }
+    }
+    
     func deleteRemote(item: Item, completion: @escaping (Result<Item,NetworkError>) -> Void) {
         var itemURLs = itemURLsBySKU
         itemURLs.removeValue(forKey: item.SKU)
@@ -260,7 +284,6 @@ class ItemController {
     
     func append(uri: URL, forSKU SKU: Int) {
         itemURLsBySKU[SKU] = uri
-        self.saveURLs()
         DispatchQueue.global().async {
             self.putURLs()
         }

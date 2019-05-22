@@ -78,8 +78,8 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
     
     //MARK: Networking UI
     
-    func showNetworkFailureAlert() {
-        let alert = UIAlertController(title: "No Internet Connection", message: "Unable to update categories.", preferredStyle: .alert)
+    func showNetworkFailureAlert(error: Error) {
+        let alert = UIAlertController(title: "A Problem Occurred", message: "Error: \(error)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             self.stopBarButtonIndicator()
         }))
@@ -120,8 +120,23 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
             return
         }
         self.startBarButtonIndicator()
-        CategoryController.shared.modifyCategories(with: self.categories)
-        self.dismiss(animated: true, completion: nil)
+        CategoryController.shared.putRemoteCategories(categories: categories) { (result) in
+            switch result {
+            case .success(let categories):
+                CategoryController.shared.modifyCategories(with: categories)
+                ItemController.shared.putAllItems(completion: { (result) in
+                    switch result {
+                    case .success(_):
+                        ItemController.shared.saveItems()
+                        self.dismiss(animated: true, completion: nil)
+                    case .failure(let error):
+                        self.showNetworkFailureAlert(error: error)
+                    }
+                })
+            case .failure(let error):
+                self.showNetworkFailureAlert(error: error)
+            }
+        }
     }
     
     func duplicatesFound() -> Bool {
