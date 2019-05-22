@@ -43,7 +43,9 @@ class IntermediateTableViewController: UITableViewController {
         default:
             return
         }
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     //MARK: Cell Configuration

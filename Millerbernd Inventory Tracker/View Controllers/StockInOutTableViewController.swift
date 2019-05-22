@@ -117,8 +117,8 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
     
     //MARK: Networking UI Methods
     
-    func showNetworkFailureAlert() {
-        let alert = UIAlertController(title: "A problem occured", message: "Unable to update item.", preferredStyle: .alert)
+    func showNetworkFailureAlert(error: Error) {
+        let alert = UIAlertController(title: "A problem occured", message: "Error: \(error)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             self.stopBarButtonIndicator()
         }))
@@ -156,15 +156,23 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
     
     @IBAction func doneButtonPressed(_ sender: Any) {
         startBarButtonIndicator()
-        guard let adjustment = createNewAdjustment() else {
-            showNetworkFailureAlert()
-            return
+        ItemController.shared.put(item: item) { (result) in
+            switch result {
+            case .success(let newItem):
+                guard let adjustment = self.createNewAdjustment() else {
+                    print("didnt create adjustment")
+                    return
+                }
+                AdjustmentController.shared.addNew(adjustment: adjustment)
+                ItemController.shared.addNew(item: newItem)
+                ItemController.shared.saveItems()
+                AdjustmentController.shared.saveAdjustments()
+                self.dismiss(animated: true, completion: nil)
+            case .failure(let error):
+                self.showNetworkFailureAlert(error: error)
+            }
         }
-        AdjustmentController.shared.addNew(adjustment: adjustment)
-        ItemController.shared.adjustQuantities(for: self.item)
-        ItemController.shared.saveItems()
-        AdjustmentController.shared.saveAdjustments()
-        dismiss(animated: true, completion: nil)
+        
     }
     
     func createNewAdjustment() -> Adjustment? {

@@ -13,7 +13,14 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
     //MARK: Properties
     
     let browseTypes: [String] = ["Categories", "Locations", "Manufacturers"]
-    var recentItems = [Item]()
+    var recentItems = [Item]() {
+        didSet {
+            let newValue = recentItems.count
+            if oldValue.count != newValue {
+                 self.tableView.reloadSections(IndexSet(integer: 2), with: .automatic)
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +37,6 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
     
     @objc func updateUI() {
         DispatchQueue.main.async {
-            self.recentItems = ItemController.shared.recentItems
             self.updateItemQuantities()
             if !(self.isViewLoaded && self.view?.window != nil) {
                 self.tableView.reloadSections(IndexSet(integer: 2), with: .automatic)
