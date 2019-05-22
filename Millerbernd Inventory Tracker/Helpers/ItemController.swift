@@ -192,8 +192,6 @@ class ItemController {
                 let urls = try? JSONDecoder().decode([Int:URL].self, from: data) {
                 self.itemURLsBySKU = urls
                 self.getRemoteItems()
-            } else {
-                print("error getting urls")
             }
         }
         task.resume()

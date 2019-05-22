@@ -19,6 +19,7 @@ class AdjustmentController {
     private var adjustmentsByDate = [Date: [Adjustment]]()
     private var adjustmentsBySKU = [Int : [Adjustment]]()
     private var adjustmentsByReason = [String: [Adjustment]]()
+    private var adjustmentURLsByDate = [Date: URL]()
     
     var employees: [String] {
         get {
@@ -69,14 +70,77 @@ class AdjustmentController {
     
     //MARK: HTTPS Networking
     
-    func getRemoteAdjustments() {
-        var request = URLRequest(url: URL(string: "https://api.myjson.com/bins/l6uv4")!)
-        request.httpMethod = "GET"
+    enum NetworkError: Error {
+        case noConnection
+        case badURL
+    }
+    
+    func post(adjustment: Adjustment, completion: @escaping (Result<URL,NetworkError>) -> Void) {
+        let baseURL = URL(string: "https://api.myjson.com/bins")
+        var request = URLRequest(url: baseURL!)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let jsonData = try? JSONEncoder().encode(adjustment)
+        request.httpBody = jsonData
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let data = data {
+                let decodedData = try! JSONDecoder().decode([String:String].self, from: data)
+                if let uriString = decodedData["uri"],
+                    let uri = URL(string: uriString) {
+                    completion(.success(uri))
+                } else {
+                    completion(.failure(.badURL))
+                }
+            } else {
+                completion(.failure(.noConnection))
+            }
+        }
+        task.resume()
+    }
+    
+    func putURLs() {
+        let baseURL = URL(string: "https://api.myjson.com/bins/z5l3s")
+        var request = URLRequest(url: baseURL!)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let jsonData = try? JSONEncoder().encode(self.adjustmentURLsByDate)
+        request.httpBody = jsonData
+        
+        let task = URLSession.shared.dataTask(with: request)
+        
+        task.resume()
+    }
+    
+    func getRemoteAdjustments() {
+        var adjustments = [Adjustment]()
+        let taskGroup = DispatchGroup()
+        for url in adjustmentURLsByDate.values {
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            taskGroup.enter()
+            let task = URLSession.shared.dataTask(with: request, completionHandler: { (data, _, _) in
+                if let data = data,
+                    let adjustment = try? JSONDecoder().decode(Adjustment.self, from: data) {
+                    adjustments.append(adjustment)
+                }
+                taskGroup.leave()
+            })
+            task.resume()
+        }
+        taskGroup.notify(queue: DispatchQueue.global()) {
+            self.process(adjustments)
+        }
+    }
+    
+    func getURLs() {
+        let baseURL = URL(string: "https://api.myjson.com/bins/z5l3s")
+        var request = URLRequest(url: baseURL!)
+        request.httpMethod = "GET"
+        let task = URLSession.shared.dataTask(with: request) { (data, _, _) in
             if let data = data,
-                let adjustments = try? JSONDecoder().decode([Adjustment].self, from: data) {
-                self.process(adjustments)
-                self.saveAdjustments()
+                let urls = try? JSONDecoder().decode([Date:URL].self, from: data) {
+                self.adjustmentURLsByDate = urls
+                self.getRemoteAdjustments()
             }
         }
         task.resume()
@@ -114,6 +178,13 @@ class AdjustmentController {
             allAdjustments.removeFirst()
         }
         process(allAdjustments)
+    }
+    
+    func append(uri: URL, forDateAndTime dateAndTime: Date) {
+        adjustmentURLsByDate[dateAndTime] = uri
+        DispatchQueue.global().async {
+            self.putURLs()
+        }
     }
     
     //MARK: Property Access

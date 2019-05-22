@@ -57,6 +57,7 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
         var returnLocation: String?
         alert.addTextField { (textField) in
             textField.placeholder = "301A01A"
+            textField.autocapitalizationType = .allCharacters
         }
         let done = UIAlertAction(title: "Done", style: .default) { (_) in
             let locationNumber = alert.textFields![0].text!
@@ -117,7 +118,7 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
     
     //MARK: Networking UI Methods
     
-    func showNetworkFailureAlert(error: Error) {
+    func showNetworkFailureAlert(error: String) {
         let alert = UIAlertController(title: "A problem occured", message: "Error: \(error)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             self.stopBarButtonIndicator()
@@ -156,20 +157,28 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
     
     @IBAction func doneButtonPressed(_ sender: Any) {
         startBarButtonIndicator()
+        guard let adjustment = self.createNewAdjustment() else {
+            showNetworkFailureAlert(error: "Unable to create adjustment")
+            return
+        }
         ItemController.shared.put(item: item) { (result) in
             switch result {
             case .success(let newItem):
-                guard let adjustment = self.createNewAdjustment() else {
-                    print("didnt create adjustment")
-                    return
-                }
-                AdjustmentController.shared.addNew(adjustment: adjustment)
                 ItemController.shared.addNew(item: newItem)
                 ItemController.shared.saveItems()
-                AdjustmentController.shared.saveAdjustments()
-                self.dismiss(animated: true, completion: nil)
+                AdjustmentController.shared.post(adjustment: adjustment, completion: { (result) in
+                    switch result {
+                    case .success(let url):
+                        AdjustmentController.shared.addNew(adjustment: adjustment)
+                        AdjustmentController.shared.append(uri: url, forDateAndTime: adjustment.dateAndTime)
+                        AdjustmentController.shared.saveAdjustments()
+                        self.dismiss(animated: true, completion: nil)
+                    case .failure(let error):
+                        self.showNetworkFailureAlert(error: String(describing: error))
+                    }
+                })
             case .failure(let error):
-                self.showNetworkFailureAlert(error: error)
+                self.showNetworkFailureAlert(error: String(describing: error))
             }
         }
         
