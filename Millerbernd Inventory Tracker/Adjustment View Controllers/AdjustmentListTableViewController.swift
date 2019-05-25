@@ -32,7 +32,7 @@ class AdjustmentListTableViewController: UITableViewController {
         case "Employee":
             adjustments = AdjustmentController.shared.adjustments(fromEmployee: filterItem) ?? []
         case "Date":
-            adjustments = AdjustmentController.shared.adjustments(onDate: date!) ?? []
+            adjustments = AdjustmentController.shared.adjustments(onDate: date!)?.sorted(by: { $0.dateAndTime > $1.dateAndTime }) ?? []
         case "SKU":
             adjustments = AdjustmentController.shared.adjustments(withSKU: Int(filterItem)!) ?? []
         case "Reason Code":

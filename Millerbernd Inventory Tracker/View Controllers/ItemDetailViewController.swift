@@ -41,7 +41,7 @@ class ItemDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //MARK: Methods
     
-    @objc func updateUI() {
+    func updateUI() {
         DispatchQueue.main.async {
             self.detailsLabel.text = self.item.SKU != 0 ? self.item.details : "Select an Item"
             self.manufacturerLabel.text = self.item.manufacturer
@@ -62,6 +62,7 @@ class ItemDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             self.locationsTableView.reloadData()
         }
+        
         
 
     }
