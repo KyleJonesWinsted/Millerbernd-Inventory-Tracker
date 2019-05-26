@@ -26,7 +26,6 @@
 		DA30F5D8228F98BA00B76BA7 /* BrowseSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30F5B3228F98BA00B76BA7 /* BrowseSplitViewController.swift */; };
 		DA30F5D9228F98BA00B76BA7 /* ReasonTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30F5B4228F98BA00B76BA7 /* ReasonTableViewController.swift */; };
 		DA30F5DA228F98BA00B76BA7 /* BrowseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30F5B5228F98BA00B76BA7 /* BrowseTableViewController.swift */; };
-		DA30F5DB228F98BA00B76BA7 /* ItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30F5B6228F98BA00B76BA7 /* ItemDetailViewController.swift */; };
 		DA30F5DC228F98BA00B76BA7 /* ItemListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30F5B7228F98BA00B76BA7 /* ItemListTableViewController.swift */; };
 		DA30F5DD228F98BA00B76BA7 /* StockInOutTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30F5B8228F98BA00B76BA7 /* StockInOutTableViewController.swift */; };
 		DA30F5DE228F98BA00B76BA7 /* IntermediateTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30F5B9228F98BA00B76BA7 /* IntermediateTableViewController.swift */; };
@@ -92,7 +91,6 @@
 		DA30F5B3228F98BA00B76BA7 /* BrowseSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseSplitViewController.swift; sourceTree = "<group>"; };
 		DA30F5B4228F98BA00B76BA7 /* ReasonTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReasonTableViewController.swift; sourceTree = "<group>"; };
 		DA30F5B5228F98BA00B76BA7 /* BrowseTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseTableViewController.swift; sourceTree = "<group>"; };
-		DA30F5B6228F98BA00B76BA7 /* ItemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemDetailViewController.swift; sourceTree = "<group>"; };
 		DA30F5B7228F98BA00B76BA7 /* ItemListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemListTableViewController.swift; sourceTree = "<group>"; };
 		DA30F5B8228F98BA00B76BA7 /* StockInOutTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StockInOutTableViewController.swift; sourceTree = "<group>"; };
 		DA30F5B9228F98BA00B76BA7 /* IntermediateTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntermediateTableViewController.swift; sourceTree = "<group>"; };
@@ -234,7 +232,6 @@
 				DA30F5B3228F98BA00B76BA7 /* BrowseSplitViewController.swift */,
 				DA30F5B4228F98BA00B76BA7 /* ReasonTableViewController.swift */,
 				DA30F5B5228F98BA00B76BA7 /* BrowseTableViewController.swift */,
-				DA30F5B6228F98BA00B76BA7 /* ItemDetailViewController.swift */,
 				DA2DA223229994BA0070EA14 /* ItemDetailTableViewController.swift */,
 				DA30F5B7228F98BA00B76BA7 /* ItemListTableViewController.swift */,
 				DA30F5B8228F98BA00B76BA7 /* StockInOutTableViewController.swift */,
@@ -428,7 +425,6 @@
 				DA30F5E3228F98BA00B76BA7 /* LowStockTableViewCell.swift in Sources */,
 				DA30F5EB228F98BA00B76BA7 /* AdjustmentTypeTableViewController.swift in Sources */,
 				DA30F5E2228F98BA00B76BA7 /* StockInOutItemTableViewCell.swift in Sources */,
-				DA30F5DB228F98BA00B76BA7 /* ItemDetailViewController.swift in Sources */,
 				DA30F5DE228F98BA00B76BA7 /* IntermediateTableViewController.swift in Sources */,
 				DA30F5E8228F98BA00B76BA7 /* SwiftExtensions.swift in Sources */,
 				DA30F5CF228F98BA00B76BA7 /* AddNewItemTableViewController.swift in Sources */,
