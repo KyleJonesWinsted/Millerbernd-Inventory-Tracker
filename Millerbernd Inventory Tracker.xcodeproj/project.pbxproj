@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DA2DA224229994BA0070EA14 /* ItemDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2DA223229994BA0070EA14 /* ItemDetailTableViewController.swift */; };
 		DA30F57C228F988D00B76BA7 /* Millerbernd_Inventory_Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DA30F57A228F988D00B76BA7 /* Millerbernd_Inventory_Tracker.xcdatamodeld */; };
 		DA30F581228F988E00B76BA7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA30F57F228F988E00B76BA7 /* LaunchScreen.storyboard */; };
 		DA30F58C228F988E00B76BA7 /* Millerbernd_Inventory_TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30F58B228F988E00B76BA7 /* Millerbernd_Inventory_TrackerTests.swift */; };
@@ -66,6 +67,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DA2DA223229994BA0070EA14 /* ItemDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailTableViewController.swift; sourceTree = "<group>"; };
 		DA30F570228F988D00B76BA7 /* Millerbernd Inventory Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Millerbernd Inventory Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA30F57B228F988D00B76BA7 /* Millerbernd_Inventory_Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Millerbernd_Inventory_Tracker.xcdatamodel; sourceTree = "<group>"; };
 		DA30F580228F988E00B76BA7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 				DA30F5B4228F98BA00B76BA7 /* ReasonTableViewController.swift */,
 				DA30F5B5228F98BA00B76BA7 /* BrowseTableViewController.swift */,
 				DA30F5B6228F98BA00B76BA7 /* ItemDetailViewController.swift */,
+				DA2DA223229994BA0070EA14 /* ItemDetailTableViewController.swift */,
 				DA30F5B7228F98BA00B76BA7 /* ItemListTableViewController.swift */,
 				DA30F5B8228F98BA00B76BA7 /* StockInOutTableViewController.swift */,
 				DA30F5B9228F98BA00B76BA7 /* IntermediateTableViewController.swift */,
@@ -430,6 +433,7 @@
 				DA30F5E8228F98BA00B76BA7 /* SwiftExtensions.swift in Sources */,
 				DA30F5CF228F98BA00B76BA7 /* AddNewItemTableViewController.swift in Sources */,
 				DA30F57C228F988D00B76BA7 /* Millerbernd_Inventory_Tracker.xcdatamodeld in Sources */,
+				DA2DA224229994BA0070EA14 /* ItemDetailTableViewController.swift in Sources */,
 				DA30F5DF228F98BA00B76BA7 /* EmployeeNumberTableViewCell.swift in Sources */,
 				DA30F5E9228F98BA00B76BA7 /* AdjustmentController.swift in Sources */,
 				DA30F5DD228F98BA00B76BA7 /* StockInOutTableViewController.swift in Sources */,

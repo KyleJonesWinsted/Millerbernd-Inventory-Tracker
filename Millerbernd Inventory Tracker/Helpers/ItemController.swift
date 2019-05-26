@@ -19,9 +19,6 @@ class ItemController {
     private var itemsByManufacturer = [String: [Item]]()
     private var itemsByLocation = [String: [Item]]()
     private var itemsByCategory = [Category: [Item]]()
-    private var itemURLsBySKU = [Int: URL]()
-    
-    
     
     var categories: [Category] {
         get {
@@ -42,12 +39,6 @@ class ItemController {
     }
     
     var recentItems = [Item]()
-    
-    let sampleItems = [
-        Item(manufacturer: "TestManufacturer", details: "TestDescription", SKU: 1234, category: Category(id: 1, name: "TestCategory", minimumStockLevel: nil), locations: ["301A01A", "302A02A", "303A02A"], stockAtLocation: [1, 2, 3]),
-        Item(manufacturer: "Sumitomo", details: "CNMG432EMX", SKU: 2345, category: Category(id: 2, name: "Carbide Insert", minimumStockLevel: 5), locations: ["301A01A", "303A01A"], stockAtLocation: [2, 2]),
-        Item(manufacturer: "Sandvik", details: "DCLNL 20 3D", SKU: 3456, category: Category(id: 3, name: "Lathe Tool Holder", minimumStockLevel: 1), locations: ["301A01A"], stockAtLocation: [1])
-    ]
     
     private func process(_ items: [Item]) {
         itemsBySKU.removeAll()
@@ -77,146 +68,6 @@ class ItemController {
         }
     }
     
-    //MARK: HTTPS Networking
-    
-    enum NetworkError: Error {
-        case noConnection
-        case badURL
-    }
-    
-    func post(item: Item, completion: @escaping (Result<URL,NetworkError>) -> Void) {
-        let baseURL = URL(string: "https://api.myjson.com/bins")
-        var request = URLRequest(url: baseURL!)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONEncoder().encode(item)
-        request.httpBody = jsonData
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let data = data {
-                let decodedData = try! JSONDecoder().decode([String:String].self, from: data)
-                if let uriString = decodedData["uri"],
-                    let uri = URL(string: uriString) {
-                    completion(.success(uri))
-                } else {
-                    completion(.failure(.badURL))
-                }
-            } else {
-                completion(.failure(.noConnection))
-            }
-        }
-        task.resume()
-    }
-    
-    func put(item: Item, completion: @escaping (Result<Item, NetworkError>) -> Void) {
-        let item = ItemController.shared.adjustQuantities(for: item)
-        guard let baseURL = itemURLsBySKU[item.SKU] else { completion(.failure(.badURL)); return }
-        var request = URLRequest(url: baseURL)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONEncoder().encode(item)
-        request.httpBody = jsonData
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let _ = error {
-                completion(.failure(.noConnection))
-            } else {
-                completion(.success(item))
-            }
-        }
-        task.resume()
-    }
-    
-    func putAllItems(completion: @escaping (Result<Any?,NetworkError>) -> Void) {
-        let taskGroup = DispatchGroup()
-        var success: Bool = false
-        for item in itemsBySKU.values {
-            taskGroup.enter()
-            put(item: item) { (result) in
-                switch result {
-                case .success(_):
-                    success = true
-                case .failure(_):
-                    success = false
-                }
-                taskGroup.leave()
-            }
-        }
-        taskGroup.notify(queue: DispatchQueue.global()) {
-            if success {
-                completion(.success(nil))
-            } else {
-                completion(.failure(.noConnection))
-            }
-        }
-    }
-    
-    func deleteRemote(item: Item, completion: @escaping (Result<Item,NetworkError>) -> Void) {
-        var itemURLs = itemURLsBySKU
-        itemURLs.removeValue(forKey: item.SKU)
-        let baseURL = URL(string: "https://api.myjson.com/bins/pc366")
-        var request = URLRequest(url: baseURL!)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONEncoder().encode(itemURLs)
-        request.httpBody = jsonData
-        
-        let task = URLSession.shared.dataTask(with: request) { (_,_,error) in
-            if let _ = error {
-                completion(.failure(.noConnection))
-            } else {
-                completion(.success(item))
-            }
-        }
-        
-        task.resume()
-    }
-    
-    func putURLs() {
-        let baseURL = URL(string: "https://api.myjson.com/bins/pc366")
-        var request = URLRequest(url: baseURL!)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONEncoder().encode(self.itemURLsBySKU)
-        request.httpBody = jsonData
-        
-        let task = URLSession.shared.dataTask(with: request)
-        
-        task.resume()
-    }
-    
-    func getURLs() {
-        let baseURL = URL(string: "https://api.myjson.com/bins/pc366")
-        var request = URLRequest(url: baseURL!)
-        request.httpMethod = "GET"
-        let task = URLSession.shared.dataTask(with: request) { (data, _, _) in
-            if let data = data,
-                let urls = try? JSONDecoder().decode([Int:URL].self, from: data) {
-                self.itemURLsBySKU = urls
-                self.getRemoteItems()
-            }
-        }
-        task.resume()
-    }
-    
-    func getRemoteItems() {
-        var items = [Item]()
-        let taskGroup = DispatchGroup()
-        for url in itemURLsBySKU.values {
-            var request = URLRequest(url: url)
-            request.httpMethod = "GET"
-            taskGroup.enter()
-            let task = URLSession.shared.dataTask(with: request, completionHandler: { (data, _, _) in
-                if let data = data,
-                    let item = try? JSONDecoder().decode(Item.self, from: data) {
-                    items.append(item)
-                }
-                taskGroup.leave()
-            })
-            task.resume()
-        }
-        taskGroup.notify(queue: DispatchQueue.global()) {
-            self.process(items)
-        }
-    }
     
     //MARK: Data persistance
     
@@ -226,15 +77,6 @@ class ItemController {
         
         let items = Array(itemsBySKU.values)
         if let data = try? JSONEncoder().encode(items) {
-            try? data.write(to: archiveURL)
-        }
-    }
-    
-    func saveURLs() {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("itemURLs").appendingPathExtension("json")
-        
-        if let data = try? JSONEncoder().encode(itemURLsBySKU) {
             try? data.write(to: archiveURL)
         }
     }
@@ -252,22 +94,9 @@ class ItemController {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("allItems").appendingPathExtension("json")
         
-        guard let data = try? Data(contentsOf: archiveURL) else {
-            items = sampleItems
-            process(items)
-            return
-        }
+        guard let data = try? Data(contentsOf: archiveURL) else { return }
         items = (try? JSONDecoder().decode([Item].self, from: data)) ?? []
         process(items)
-    }
-    
-    func loadURLs() {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let archiveURL = documentsDirectory.appendingPathComponent("itemURLs").appendingPathExtension("json")
-        
-        if let data = try? Data(contentsOf: archiveURL) {
-                itemURLsBySKU = (try? JSONDecoder().decode([Int: URL].self, from: data)) ?? [:]
-        }
     }
     
     func loadRecent() {
@@ -276,16 +105,14 @@ class ItemController {
         if let recentData = try? Data(contentsOf: recentURL) {
             recentItems = (try? JSONDecoder().decode([Item].self, from: recentData)) ?? []
         }
+        for (index, item) in recentItems.enumerated().reversed() {
+            if !itemsBySKU.keys.contains(item.SKU) {
+                recentItems.remove(at: index)
+            }
+        }
     }
     
     //MARK: Methods
-    
-    func append(uri: URL, forSKU SKU: Int) {
-        itemURLsBySKU[SKU] = uri
-        DispatchQueue.global().async {
-            self.putURLs()
-        }
-    }
     
     func adjustQuantities(for item: Item) -> Item {
         var item = item
@@ -338,10 +165,6 @@ class ItemController {
             }
         }
         itemsBySKU.removeValue(forKey: SKU)
-        itemURLsBySKU.removeValue(forKey: SKU)
-        DispatchQueue.global().async {
-            self.putURLs()
-        }
         process(Array(itemsBySKU.values))
     }
     

@@ -120,7 +120,7 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
             
         } else if segue.identifier == PropertyKeys.recentItemDetailsSegue {
             let navController = segue.destination as! UINavigationController
-            let itemDetails = navController.topViewController as! ItemDetailViewController
+            let itemDetails = navController.topViewController as! ItemDetailTableViewController
             itemDetails.item = recentItems[index.row]
             
         }

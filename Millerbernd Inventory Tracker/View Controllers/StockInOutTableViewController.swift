@@ -53,17 +53,17 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
     }
     
     func showAddLocationAlert() {
-        let alert = UIAlertController(title: "Enter location number.", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Enter storage location.", message: nil, preferredStyle: .alert)
         var returnLocation: String?
         alert.addTextField { (textField) in
-            textField.placeholder = "301A01A"
-            textField.autocapitalizationType = .allCharacters
+            textField.placeholder = "Location"
+            textField.autocapitalizationType = .words
         }
         let done = UIAlertAction(title: "Done", style: .default) { (_) in
             let locationNumber = alert.textFields![0].text!
             print(locationNumber)
             guard self.validateLocationNumber(locationNumber) else {
-                let invalidAlert = UIAlertController(title: "Invalid location", message: "Please enter a valid location number. (ex. 301A01A)", preferredStyle: .alert)
+                let invalidAlert = UIAlertController(title: "Invalid location", message: "Please enter a storage location.", preferredStyle: .alert)
                 invalidAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (_) in
                     self.showAddLocationAlert()
                 }))
@@ -76,7 +76,6 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
             self.item.stockAtLocation.append(0)
             self.amountsChanged.append(0)
             self.tableView.insertRows(at: [IndexPath(row: self.item.locations.count - 1, section: 2)], with: UITableView.RowAnimation.automatic)
-            //self.tableView.reloadSections(IndexSet(arrayLiteral: 2), with: UITableView.RowAnimation.automatic)
         }
         alert.addAction(done)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -161,27 +160,11 @@ class StockInOutTableViewController: UITableViewController, ReasonTableViewDeleg
             showNetworkFailureAlert(error: "Unable to create adjustment")
             return
         }
-        ItemController.shared.put(item: item) { (result) in
-            switch result {
-            case .success(let newItem):
-                ItemController.shared.addNew(item: newItem)
-                ItemController.shared.saveItems()
-                AdjustmentController.shared.post(adjustment: adjustment, completion: { (result) in
-                    switch result {
-                    case .success(let url):
-                        AdjustmentController.shared.addNew(adjustment: adjustment)
-                        AdjustmentController.shared.append(uri: url, forDateAndTime: adjustment.dateAndTime)
-                        AdjustmentController.shared.saveAdjustments()
-                        self.dismiss(animated: true, completion: nil)
-                    case .failure(let error):
-                        self.showNetworkFailureAlert(error: String(describing: error))
-                    }
-                })
-            case .failure(let error):
-                self.showNetworkFailureAlert(error: String(describing: error))
-            }
-        }
-        
+        ItemController.shared.addNew(item: item)
+        ItemController.shared.saveItems()
+        AdjustmentController.shared.addNew(adjustment: adjustment)
+        AdjustmentController.shared.saveAdjustments()
+        self.dismiss(animated: true, completion: nil)
     }
     
     func createNewAdjustment() -> Adjustment? {

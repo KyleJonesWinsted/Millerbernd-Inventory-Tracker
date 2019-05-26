@@ -51,6 +51,8 @@ struct PropertyKeys {
     static let resultsTableCell = "ResultsTableCell"
     static let searchDetailsSegue = "SearchDetailSegue"
     static let itemListSummaryCell = "ItemListSummaryCell"
-    
+    static let itemDetailCell1 = "ItemDetailCell1"
+    static let itemDetailCell2 = "ItemDetailCell2"
+    static let itemDetailCell3 = "ItemDetailCell3"
     
 }

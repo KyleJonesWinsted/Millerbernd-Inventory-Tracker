@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class CategoryController {
     
@@ -15,67 +16,47 @@ class CategoryController {
     static let shared = CategoryController()
     
     var categories = [Category]()
-    
-    let sampleCategories = [
-        Category(id: 1, name: "TestCategory", minimumStockLevel: nil),
-        Category(id: 2, name: "Carbide Insert", minimumStockLevel: 5),
-        Category(id: 3, name: "Lathe Tool Holder", minimumStockLevel: 1)
-    ]
-    
-    //MARK: HTTPS Networking
-    
-    enum NetworkError: Error {
-        case noConnection
-        case badURL
-    }
-    
-    func putRemoteCategories(categories: [Category], completion: @escaping (Result<[Category],NetworkError>) -> Void) {
-        let data: [Category] = categories
-        var request = URLRequest(url: URL(string: "https://api.myjson.com/bins/pybpc")!)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONEncoder().encode(data)
-        request.httpBody = jsonData
-        let task = URLSession.shared.dataTask(with: request) { (data,response,error) in
-            if error == nil {
-                completion(.success(categories))
-            } else {
-                completion(.failure(.noConnection))
-            }
-        }
-        task.resume()
-    }
-    
-    func getRemoteCategories() {
-        var request = URLRequest(url: URL(string: "https://api.myjson.com/bins/pybpc")!)
-        request.httpMethod = "GET"
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let data = data,
-                let categories = try? JSONDecoder().decode([Category].self, from: data) {
-                self.categories = categories
-                self.saveCategories()
-            }
-        }
-        task.resume()
-    }
+    var categoryImagesByID = [Int:UIImage]()
     
     //MARK: Data Persistance
     
+    private let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    
     func loadCategories() {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("categories").appendingPathExtension("json")
         
         if let data = try? Data(contentsOf: archiveURL) {
             categories = (try? JSONDecoder().decode([Category].self, from: data)) ?? []
-        } else {
-            categories = sampleCategories
         }
     }
     
     func saveCategories() {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("categories").appendingPathExtension("json")
         if let data = try? JSONEncoder().encode(categories) {
+            try? data.write(to: archiveURL)
+        }
+    }
+    
+    func loadImages() {
+        let archiveURL = documentsDirectory.appendingPathComponent("categoryImages").appendingPathExtension("json")
+        guard let data = try? Data(contentsOf: archiveURL),
+        let decodedImagesByID = (try? JSONDecoder().decode([Int:Data].self , from: data)) else { return }
+        for (id, data) in decodedImagesByID {
+            let image = UIImage(data: data, scale: UIScreen.main.scale)
+            categoryImagesByID[id] = image
+        }
+        
+    }
+    
+    func saveImages() {
+        var encodedImagesByID = [Int:Data]()
+        let archiveURL = documentsDirectory.appendingPathComponent("categoryImages").appendingPathExtension("json")
+        for (id, image) in categoryImagesByID {
+            if let imageData = image.jpegData(compressionQuality: 1.0) {
+                encodedImagesByID[id] = imageData
+            }
+        }
+        if let data = try? JSONEncoder().encode(encodedImagesByID) {
             try? data.write(to: archiveURL)
         }
     }
@@ -86,5 +67,13 @@ class CategoryController {
         self.categories = categories
         ItemController.shared.updateItemCategories()
         saveCategories()
+    }
+    
+    func modifyCategoryImages(with images: [Int:UIImage]) {
+        self.categoryImagesByID = images
+    }
+    
+    func imageForCategory(id: Int) -> UIImage? {
+        return categoryImagesByID[id]
     }
 }

@@ -117,7 +117,7 @@ class SearchTableViewController: UITableViewController, ResultsTableDelegate, UI
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let itemDetailController = segue.destination as! ItemDetailViewController
+        let itemDetailController = segue.destination as! ItemDetailTableViewController
         itemDetailController.item = selectedItem!
     }
     

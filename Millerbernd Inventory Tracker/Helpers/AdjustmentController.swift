@@ -19,7 +19,6 @@ class AdjustmentController {
     private var adjustmentsByDate = [Date: [Adjustment]]()
     private var adjustmentsBySKU = [Int : [Adjustment]]()
     private var adjustmentsByReason = [String: [Adjustment]]()
-    private var adjustmentURLsByDate = [Date: URL]()
     
     var employees: [String] {
         get {
@@ -47,12 +46,6 @@ class AdjustmentController {
         }
     }
     
-    let sampleAdjustments = [
-        Adjustment(employee: "2718", reason: "Correction", dateAndTime: Date(timeIntervalSinceNow: -8000), item: Item(manufacturer: "TestManufacturer", details: "TestDescription", SKU: 1234, category: Category(id: 1, name: "TestCategory", minimumStockLevel: nil), locations: [], stockAtLocation: []), amountsChanged: [-1], locations: ["301A01A"]),
-        Adjustment(employee: "2718", reason: "General Use", dateAndTime: Date(timeIntervalSinceNow: -2000), item: Item(manufacturer: "Sumitomo", details: "CNMG432EMX", SKU: 2345, category: Category(id: 2, name: "Carbide Insert", minimumStockLevel: nil), locations: [], stockAtLocation: []), amountsChanged: [-1], locations: ["302A01A"]),
-        Adjustment(employee: "1234", reason: "Correction", dateAndTime: Date(timeIntervalSinceNow: -80000), item: Item(manufacturer: "Sandvik", details: "DCLNL 20 3D", SKU: 3456, category: Category(id: 3, name: "Lathe Tool Holder", minimumStockLevel: nil), locations: ["301A01A","303A01A"], stockAtLocation: [1,2]), amountsChanged: [-1,1], locations: ["301A01A","303A01A"])
-    ]
-    
     private func process(_ adjustments: [Adjustment]) {
         adjustmentsByEmployee.removeAll()
         adjustmentsByDate.removeAll()
@@ -66,84 +59,6 @@ class AdjustmentController {
             adjustmentsBySKU[adjustment.item.SKU, default: []].insert(adjustment, at: 0)
             adjustmentsByReason[adjustment.reason, default: []].insert(adjustment, at: 0)
         }
-    }
-    
-    //MARK: HTTPS Networking
-    
-    enum NetworkError: Error {
-        case noConnection
-        case badURL
-    }
-    
-    func post(adjustment: Adjustment, completion: @escaping (Result<URL,NetworkError>) -> Void) {
-        let baseURL = URL(string: "https://api.myjson.com/bins")
-        var request = URLRequest(url: baseURL!)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONEncoder().encode(adjustment)
-        request.httpBody = jsonData
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let data = data {
-                let decodedData = try! JSONDecoder().decode([String:String].self, from: data)
-                if let uriString = decodedData["uri"],
-                    let uri = URL(string: uriString) {
-                    completion(.success(uri))
-                } else {
-                    completion(.failure(.badURL))
-                }
-            } else {
-                completion(.failure(.noConnection))
-            }
-        }
-        task.resume()
-    }
-    
-    func putURLs() {
-        let baseURL = URL(string: "https://api.myjson.com/bins/z5l3s")
-        var request = URLRequest(url: baseURL!)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONEncoder().encode(self.adjustmentURLsByDate)
-        request.httpBody = jsonData
-        
-        let task = URLSession.shared.dataTask(with: request)
-        
-        task.resume()
-    }
-    
-    func getRemoteAdjustments() {
-        var adjustments = [Adjustment]()
-        let taskGroup = DispatchGroup()
-        for url in adjustmentURLsByDate.values {
-            var request = URLRequest(url: url)
-            request.httpMethod = "GET"
-            taskGroup.enter()
-            let task = URLSession.shared.dataTask(with: request, completionHandler: { (data, _, _) in
-                if let data = data,
-                    let adjustment = try? JSONDecoder().decode(Adjustment.self, from: data) {
-                    adjustments.append(adjustment)
-                }
-                taskGroup.leave()
-            })
-            task.resume()
-        }
-        taskGroup.notify(queue: DispatchQueue.global()) {
-            self.process(adjustments)
-        }
-    }
-    
-    func getURLs() {
-        let baseURL = URL(string: "https://api.myjson.com/bins/z5l3s")
-        var request = URLRequest(url: baseURL!)
-        request.httpMethod = "GET"
-        let task = URLSession.shared.dataTask(with: request) { (data, _, _) in
-            if let data = data,
-                let urls = try? JSONDecoder().decode([Date:URL].self, from: data) {
-                self.adjustmentURLsByDate = urls
-                self.getRemoteAdjustments()
-            }
-        }
-        task.resume()
     }
     
     //MARK: Data Persistance
@@ -161,11 +76,7 @@ class AdjustmentController {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentsDirectory.appendingPathComponent("adjustments").appendingPathExtension("json")
         
-        guard let data = try? Data(contentsOf: archiveURL) else {
-            allAdjustments = sampleAdjustments
-            process(allAdjustments)
-            return
-        }
+        guard let data = try? Data(contentsOf: archiveURL) else { return }
         allAdjustments = (try? JSONDecoder().decode([Adjustment].self, from: data)) ?? []
         process(allAdjustments)
     }
@@ -178,13 +89,6 @@ class AdjustmentController {
             allAdjustments.removeFirst()
         }
         process(allAdjustments)
-    }
-    
-    func append(uri: URL, forDateAndTime dateAndTime: Date) {
-        adjustmentURLsByDate[dateAndTime] = uri
-        DispatchQueue.global().async {
-            self.putURLs()
-        }
     }
     
     //MARK: Property Access

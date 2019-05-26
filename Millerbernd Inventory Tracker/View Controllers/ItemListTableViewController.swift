@@ -132,7 +132,7 @@ class ItemListTableViewController: UITableViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navController = segue.destination as! UINavigationController
-        let itemDetailController = navController.topViewController as! ItemDetailViewController
+        let itemDetailController = navController.topViewController as! ItemDetailTableViewController
         let indexPath = tableView.indexPathForSelectedRow!
         itemDetailController.item = items[indexPath.row]
     }

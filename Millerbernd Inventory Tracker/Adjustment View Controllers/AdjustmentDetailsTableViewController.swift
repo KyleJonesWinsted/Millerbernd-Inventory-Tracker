@@ -49,7 +49,7 @@ class AdjustmentDetailsTableViewController: UITableViewController {
                 cell.textLabel?.text = "Reason Code:"
                 cell.detailTextLabel?.text = adjustment.reason
             default:
-                cell.textLabel?.text = "Date and Time:"
+                cell.textLabel?.text = "Date:"
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateStyle = .medium
                 dateFormatter.timeStyle = .medium

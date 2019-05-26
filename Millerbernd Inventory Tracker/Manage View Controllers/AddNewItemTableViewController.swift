@@ -153,7 +153,7 @@ class AddNewItemTableViewController: UITableViewController, SelectCategoryTableD
     
     //MARK: Network UI
     
-    func showNetworkFailureAlert(error: Error) {
+    func showNetworkFailureAlert(error: String) {
         let alert = UIAlertController(title: "Unable to Update Items", message: "Error: \(error)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             self.stopBarButtonIndicator()
@@ -187,37 +187,15 @@ class AddNewItemTableViewController: UITableViewController, SelectCategoryTableD
     //MARK: Completion
     
     @IBAction func doneButtonPressed(_ sender: Any) {
-        guard let item = item else { return }
-        startBarButtonIndicator()
-        switch isModifyingItem {
-        case true:
-            ItemController.shared.put(item: item) { (result) in
-                switch result {
-                case .success(let item):
-                    ItemController.shared.addNew(item: item)
-                    ItemController.shared.addRecent(item: item)
-                    ItemController.shared.saveItems()
-                    ItemController.shared.saveURLs()
-                    self.dismiss(animated: true, completion: nil)
-                case .failure(let error):
-                    self.showNetworkFailureAlert(error: error)
-                }
-            }
-        case false:
-            ItemController.shared.post(item: item) { (result) in
-                switch result {
-                case .success(let uri):
-                    ItemController.shared.append(uri: uri, forSKU: item.SKU)
-                    ItemController.shared.addNew(item: item)
-                    ItemController.shared.addRecent(item: item)
-                    ItemController.shared.saveURLs()
-                    self.dismiss(animated: true, completion: nil)
-                case .failure(let error):
-                    self.showNetworkFailureAlert(error: error)
-                }
-            }
-            
+        guard let item = item else {
+            showNetworkFailureAlert(error: "Unable to create item")
+            return
         }
+        startBarButtonIndicator()
+        ItemController.shared.addNew(item: item)
+        ItemController.shared.addRecent(item: item)
+        ItemController.shared.saveItems()
+        self.dismiss(animated: true, completion: nil)
         
     }
     
@@ -231,18 +209,9 @@ class AddNewItemTableViewController: UITableViewController, SelectCategoryTableD
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (_) in
             self.startBarButtonIndicator()
             guard let item = self.item else { self.dismiss(animated: true, completion: nil); return }
-            ItemController.shared.deleteRemote(item: item, completion: { (result) in
-                switch result{
-                case.success(let item):
-                    ItemController.shared.deleteItem(withSKU: item.SKU)
-                    ItemController.shared.saveItems()
-                    ItemController.shared.saveURLs()
-                    self.dismiss(animated: true, completion: nil)
-                case.failure(let error):
-                    self.showNetworkFailureAlert(error: error)
-                }
-            })
-            
+            ItemController.shared.deleteItem(withSKU: item.SKU)
+            ItemController.shared.saveItems()
+            self.dismiss(animated: true, completion: nil)
         }))
         present(alert, animated: true, completion: nil)
         

@@ -8,19 +8,22 @@
 
 import UIKit
 
-class EditCategoryTableViewController: UITableViewController, EditCategoryCellDelegate, UITextFieldDelegate {
+class EditCategoryTableViewController: UITableViewController, EditCategoryCellDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     //MARK: Properties
     
     @IBOutlet var doneButton: UIBarButtonItem!
     
     var categories = [Category]()
+    var categoryImages = [Int:UIImage]()
     var activityIndicator = UIActivityIndicatorView()
+    var lastSelectedIndex = IndexPath()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         categories = CategoryController.shared.categories
+        categoryImages = CategoryController.shared.categoryImagesByID
 
     }
     
@@ -58,11 +61,30 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
         }
     }
     
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        let category = categories[lastSelectedIndex.row]
+        categoryImages[category.id] = image
+        tableView.reloadRows(at: [lastSelectedIndex], with: .automatic)
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
     //MARK: Delegate Methods
     
     func categoryChanged(name: String, minQty: Int?, indexPath: IndexPath) {
         categories[indexPath.row].name = name
         categories[indexPath.row].minimumStockLevel = minQty
+    }
+    
+    func imageViewTapped(atIndexPath indexPath: IndexPath) {
+        lastSelectedIndex = indexPath
+        let imagePicker = UIImagePickerController()
+        imagePicker.modalPresentationStyle = .popover
+        imagePicker.delegate = self
+        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else { return }
+        let imageView = (tableView.cellForRow(at: indexPath) as! EditCategoryTableViewCell).quantityTextField
+        imagePicker.popoverPresentationController?.sourceView = imageView
+        present(imagePicker, animated: true, completion: nil)
     }
     
     //MARK: Cell configuration
@@ -71,6 +93,9 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
         cell.nameTextField.text = categories[atIndexPath.row].name
         if let minQty = categories[atIndexPath.row].minimumStockLevel {
             cell.quantityTextField.text = String(minQty)
+        }
+        if let image = categoryImages[categories[atIndexPath.row].id] {
+            cell.categoryImageView.image = image
         }
         cell.delegate = self
         cell.indexPath = atIndexPath
@@ -116,27 +141,14 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
     }
     
     @IBAction func doneButtonPressed(_ sender: Any) {
-        if duplicatesFound() {
-            return
-        }
-        self.startBarButtonIndicator()
-        CategoryController.shared.putRemoteCategories(categories: categories) { (result) in
-            switch result {
-            case .success(let categories):
-                CategoryController.shared.modifyCategories(with: categories)
-                ItemController.shared.putAllItems(completion: { (result) in
-                    switch result {
-                    case .success(_):
-                        ItemController.shared.saveItems()
-                        self.dismiss(animated: true, completion: nil)
-                    case .failure(let error):
-                        self.showNetworkFailureAlert(error: error)
-                    }
-                })
-            case .failure(let error):
-                self.showNetworkFailureAlert(error: error)
-            }
-        }
+        if duplicatesFound() { return }
+        startBarButtonIndicator()
+        CategoryController.shared.modifyCategories(with: categories)
+        CategoryController.shared.modifyCategoryImages(with: categoryImages)
+        CategoryController.shared.saveImages()
+        CategoryController.shared.saveCategories()
+        ItemController.shared.saveItems()
+        dismiss(animated: true, completion: nil)
     }
     
     func duplicatesFound() -> Bool {
@@ -168,7 +180,11 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
+        if indexPath.section == 0 {
+            return 65.0
+        } else {
+            return 44.0
+        }
     }
 
     

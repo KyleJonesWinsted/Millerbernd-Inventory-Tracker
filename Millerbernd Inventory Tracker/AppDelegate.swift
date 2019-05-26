@@ -20,9 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         let tabBarController = window?.rootViewController as! UITabBarController
         tabBarController.delegate = self
         ItemController.shared.loadItems()
-        ItemController.shared.loadURLs()
         ItemController.shared.loadRecent()
         CategoryController.shared.loadCategories()
+        CategoryController.shared.loadImages()
         AdjustmentController.shared.loadAdjustments()
         return true
     }

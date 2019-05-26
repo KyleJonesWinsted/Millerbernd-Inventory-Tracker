@@ -10,6 +10,7 @@ import UIKit
 
 protocol EditCategoryCellDelegate {
     func categoryChanged(name: String, minQty: Int?, indexPath: IndexPath)
+    func imageViewTapped(atIndexPath indexPath: IndexPath)
 }
 
 class EditCategoryTableViewCell: UITableViewCell, UITextFieldDelegate {
@@ -18,6 +19,7 @@ class EditCategoryTableViewCell: UITableViewCell, UITextFieldDelegate {
 
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var quantityTextField: UITextField!
+    @IBOutlet weak var categoryImageView: UIImageView!
     var delegate: EditCategoryTableViewController?
     var indexPath: IndexPath?
     
@@ -27,10 +29,18 @@ class EditCategoryTableViewCell: UITableViewCell, UITextFieldDelegate {
         quantityTextField.keyboardType = .numberPad
         nameTextField.delegate = self
         quantityTextField.delegate = self
-        
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageViewTapped(sender:)))
+        categoryImageView.addGestureRecognizer(tapRecognizer)
+        categoryImageView.layer.cornerRadius = 10.0
     }
+    
+    
         
     //MARK: Methods
+    
+    @objc func imageViewTapped(sender: Any?) {
+        delegate?.imageViewTapped(atIndexPath: indexPath!)
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == nameTextField {

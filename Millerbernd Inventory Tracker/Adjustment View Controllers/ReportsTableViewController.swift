@@ -117,7 +117,7 @@ class ReportsTableViewController: UITableViewController, UISplitViewControllerDe
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == PropertyKeys.lowStockItemDetailSegue {
             let navController = segue.destination as! UINavigationController
-            let itemDetailController = navController.topViewController as! ItemDetailViewController
+            let itemDetailController = navController.topViewController as! ItemDetailTableViewController
             let indexPath = tableView.indexPathForSelectedRow!
             itemDetailController.item = lowStockItems[indexPath.row]
         }
