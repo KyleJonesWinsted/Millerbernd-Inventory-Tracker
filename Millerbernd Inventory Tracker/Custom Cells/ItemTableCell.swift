@@ -32,7 +32,7 @@ class ItemTableCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 2
         label.font = UIFont.systemFont(ofSize: 12.0)
-        label.textColor = .lightGray
+        label.textColor = .gray
         label.textAlignment = .right
         return label
     }()
@@ -48,10 +48,29 @@ class ItemTableCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.selectionStyle = .none
     }
     
     override func layoutSubviews() {
         setupContentView()
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        if highlighted {
+            whiteBackground.backgroundColor = .lightBlue
+        } else {
+            whiteBackground.backgroundColor = .white
+        }
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        if selected {
+            whiteBackground.backgroundColor = .lightBlue
+            skuCategoryLabel.textColor = .gray
+        } else {
+            whiteBackground.backgroundColor = .white
+            skuCategoryLabel.textColor = .lightGray
+        }
     }
     
     func setupContentView() {

@@ -14,6 +14,7 @@ class ItemController {
     
     static let shared = ItemController()
     static let itemsUpdatedNotification = Notification.Name("ItemsUpdated")
+    static let recentItemsNotification = Notification.Name("recentUpdated")
     
     private var itemsBySKU = [Int: Item]()
     private var itemsByManufacturer = [String: [Item]]()
@@ -178,7 +179,7 @@ class ItemController {
         while recentItems.count > 50 {
             recentItems.remove(at: recentItems.count - 1)
         }
-        NotificationCenter.default.post(name: ItemController.itemsUpdatedNotification, object: nil)
+        NotificationCenter.default.post(name: ItemController.recentItemsNotification, object: nil)
         ItemController.shared.saveRecent()
     }
     

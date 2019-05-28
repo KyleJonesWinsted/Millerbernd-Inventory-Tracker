@@ -68,7 +68,7 @@ class ItemListTableViewController: UITableViewController {
         updateUI()
         tableView.reloadData()
         if items.count == currentItemCount {
-            tableView.selectRow(at: selectedRow, animated: true, scrollPosition: .none)
+            tableView.cellForRow(at: selectedRow!)?.setSelected(true, animated: true)
         }
         
     }

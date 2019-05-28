@@ -44,6 +44,7 @@ extension Array where Element: Dated {
 extension UIColor {
     static let millerberndGreen = UIColor(displayP3Red: 181/255.0, green: 189/255.0, blue: 63/255.0, alpha: 1.0)
     static let millerberndBlue = UIColor(displayP3Red: 2/255.0, green: 94/255.0, blue: 164/255.0, alpha: 1.0)
+    static let lightBlue = UIColor(displayP3Red: 2/255.0, green: 94/255.0, blue: 164/255.0, alpha: 0.12)
     static let lighterGray = UIColor(displayP3Red: 225/255, green: 225/255, blue: 225/255, alpha: 1.0)
 }
 
@@ -106,5 +107,14 @@ public extension UIImage {
         
         guard let cgImage = image?.cgImage else { return nil }
         self.init(cgImage: cgImage)
+    }
+}
+
+extension UIDevice {
+    func modelIdentifier() -> String {
+        if let simulatorModelIdentifier = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] { return simulatorModelIdentifier }
+        var sysinfo = utsname()
+        uname(&sysinfo) // ignore return value
+        return String(bytes: Data(bytes: &sysinfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)!.trimmingCharacters(in: .controlCharacters)
     }
 }

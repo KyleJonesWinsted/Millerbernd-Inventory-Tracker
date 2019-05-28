@@ -30,8 +30,10 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
         splitViewController?.delegate = self
         updateItemQuantities()
         self.clearsSelectionOnViewWillAppear = true
+        tableView.separatorStyle = .none
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: ItemController.itemsUpdatedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: ItemController.recentItemsNotification, object: nil)
     
     }
     
@@ -126,7 +128,6 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
         case 0:
             let browseCell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.browseTableCell, for: indexPath)
             browseCell.textLabel?.text = browseTypes[indexPath.row]
-            tableView.separatorStyle = .singleLine
             return browseCell
         case 1:
             let skusCell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.skusTableCell, for: indexPath)
@@ -136,7 +137,6 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
             let recentCell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.recentItemBrowseCell, for: indexPath) as! ItemTableCell
             let item = recentItems[indexPath.row]
             recentCell.item = item
-            tableView.separatorStyle = .none
             return recentCell
         }
     

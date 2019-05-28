@@ -72,20 +72,17 @@ class ManageTableViewController: UITableViewController,MFMailComposeViewControll
     func showReportIssueView(_ indexPath: IndexPath) {
         guard MFMailComposeViewController.canSendMail() else { return }
         let mailComposeVC = MFMailComposeViewController()
+        guard let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+            let appName = Bundle.main.infoDictionary?["CFBundleName"] as? String else {return}
         mailComposeVC.mailComposeDelegate = self
-        mailComposeVC.setToRecipients(["KyleJonesWinsted@gmail.com"])
-        switch indexPath.row {
-        case 0:
-            mailComposeVC.setSubject("Issue: Inventory Discrepency")
-            mailComposeVC.setMessageBody("Please enter the following information along with any additional details below.\n\nEmployee number: \nItem SKU: \nCurrent Quantity: \nCorrect Quantity: \n Additional Details: ", isHTML: false)
-        case 1:
-            mailComposeVC.setSubject("Issue: Item Inaccuracy")
-            mailComposeVC.setMessageBody("Please enter the following information along with any additional details below.\n\nEmployee number: \nItem SKU: \nCurrent Item Description: \nCorrect Description: \nAdditional Details: ", isHTML: false)
-        case 2:
-            mailComposeVC.setSubject("Issue: App Bug Report")
-            mailComposeVC.setMessageBody("Please enter the following information along with any additional details below.\n\nEmployee number: \nAttempted action that caused the issue: \nSteps taken to resolve the issue: \nAdditional details: ", isHTML: false)
-        default:
-            fatalError("No option to report issue for this row")
+        mailComposeVC.setToRecipients(["ifYouSeeThisIForgotToPutARealEmailHere@test.com"])
+        mailComposeVC.setSubject(appName + " " + appVersion)
+        mailComposeVC.setMessageBody("Feedback:\n\n", isHTML: false)
+        var device = [String:String]()
+        device["model"] = UIDevice().modelIdentifier()
+        device["iOSVersion"] = UIDevice.current.systemVersion
+        if let deviceData = try? JSONEncoder().encode(device) {
+            mailComposeVC.addAttachmentData(deviceData, mimeType: "text/plain", fileName: "system")
         }
         present(mailComposeVC, animated: true, completion: nil)
     }

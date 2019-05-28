@@ -14,7 +14,11 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
     
     @IBOutlet var doneButton: UIBarButtonItem!
     
-    var categories = [Category]()
+    var categories = [Category]() {
+        didSet {
+            updateDoneButton()
+        }
+    }
     var categoryImages = [Int:UIImage]()
     var activityIndicator = UIActivityIndicatorView()
     var lastSelectedIndex = IndexPath()
@@ -24,6 +28,7 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
         
         categories = CategoryController.shared.categories
         categoryImages = CategoryController.shared.categoryImagesByID
+        updateDoneButton()
 
     }
     
@@ -61,6 +66,16 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
         }
     }
     
+    func updateDoneButton() {
+        let emptyCategories = categories.filter { return $0.name == "" }
+        if emptyCategories.isEmpty {
+            doneButton.isEnabled = true
+        } else {
+            doneButton.isEnabled = false
+        }
+        
+    }
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
         let category = categories[lastSelectedIndex.row]
@@ -89,6 +104,8 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
             self.tableView.reloadRows(at: [self.lastSelectedIndex], with: .automatic)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        let imageView = (tableView.cellForRow(at: lastSelectedIndex) as! EditCategoryTableViewCell).quantityTextField
+        alert.popoverPresentationController?.sourceView = imageView
         present(alert, animated: true, completion: nil)
     }
     
@@ -107,7 +124,6 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
         } else {
             showImagePicker()
         }
-        
         
     }
     
