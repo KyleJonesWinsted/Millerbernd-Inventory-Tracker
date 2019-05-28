@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DA2DA224229994BA0070EA14 /* ItemDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2DA223229994BA0070EA14 /* ItemDetailTableViewController.swift */; };
+		DA2DA226229ADDDF0070EA14 /* ItemTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2DA225229ADDDF0070EA14 /* ItemTableCell.swift */; };
 		DA30F57C228F988D00B76BA7 /* Millerbernd_Inventory_Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DA30F57A228F988D00B76BA7 /* Millerbernd_Inventory_Tracker.xcdatamodeld */; };
 		DA30F581228F988E00B76BA7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA30F57F228F988E00B76BA7 /* LaunchScreen.storyboard */; };
 		DA30F58C228F988E00B76BA7 /* Millerbernd_Inventory_TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30F58B228F988E00B76BA7 /* Millerbernd_Inventory_TrackerTests.swift */; };
@@ -67,6 +68,7 @@
 
 /* Begin PBXFileReference section */
 		DA2DA223229994BA0070EA14 /* ItemDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailTableViewController.swift; sourceTree = "<group>"; };
+		DA2DA225229ADDDF0070EA14 /* ItemTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableCell.swift; sourceTree = "<group>"; };
 		DA30F570228F988D00B76BA7 /* Millerbernd Inventory Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Millerbernd Inventory Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA30F57B228F988D00B76BA7 /* Millerbernd_Inventory_Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Millerbernd_Inventory_Tracker.xcdatamodel; sourceTree = "<group>"; };
 		DA30F580228F988E00B76BA7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -243,6 +245,7 @@
 		DA30F5BA228F98BA00B76BA7 /* Custom Cells */ = {
 			isa = PBXGroup;
 			children = (
+				DA2DA225229ADDDF0070EA14 /* ItemTableCell.swift */,
 				DA30F5BB228F98BA00B76BA7 /* EmployeeNumberTableViewCell.swift */,
 				DA30F5BC228F98BA00B76BA7 /* EditCategoryTableViewCell.swift */,
 				DA30F5BD228F98BA00B76BA7 /* ResultsTableViewCell.swift */,
@@ -428,6 +431,7 @@
 				DA30F5DE228F98BA00B76BA7 /* IntermediateTableViewController.swift in Sources */,
 				DA30F5E8228F98BA00B76BA7 /* SwiftExtensions.swift in Sources */,
 				DA30F5CF228F98BA00B76BA7 /* AddNewItemTableViewController.swift in Sources */,
+				DA2DA226229ADDDF0070EA14 /* ItemTableCell.swift in Sources */,
 				DA30F57C228F988D00B76BA7 /* Millerbernd_Inventory_Tracker.xcdatamodeld in Sources */,
 				DA2DA224229994BA0070EA14 /* ItemDetailTableViewController.swift in Sources */,
 				DA30F5DF228F98BA00B76BA7 /* EmployeeNumberTableViewCell.swift in Sources */,

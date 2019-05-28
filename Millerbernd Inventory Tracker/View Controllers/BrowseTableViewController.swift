@@ -15,8 +15,9 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
     let browseTypes: [String] = ["Categories", "Locations", "Manufacturers"]
     var recentItems = [Item]() {
         didSet {
-            let newValue = recentItems.count
-            if oldValue.count != newValue {
+            let newCount = recentItems.count
+            let newItem = recentItems[0]
+            if oldValue.count != newCount || (oldValue[0].SKU == newItem.SKU && oldValue[0].totalQuantity != newItem.totalQuantity) {
                  self.tableView.reloadSections(IndexSet(integer: 2), with: .automatic)
             }
         }
@@ -25,12 +26,19 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.backgroundColor = .white
         splitViewController?.delegate = self
         updateItemQuantities()
         self.clearsSelectionOnViewWillAppear = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: ItemController.itemsUpdatedNotification, object: nil)
     
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        tableView.reloadData()
+        
     }
     
     //MARK: Methods
@@ -65,11 +73,38 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
         return 3
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 2 {
-            return "Recently Viewed"
+            let view = UIView()
+            view.backgroundColor = .white
+            let label = UILabel()
+            label.text = "Recently Viewed"
+            label.textColor = .black
+            label.font = UIFont.systemFont(ofSize: 20.0, weight: .heavy)
+            view.addSubview(label)
+            label.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: nil, paddingTop: 10.0, paddingLeft: 10.0, paddingBottom: 10.0, paddingRight: 0.0, width: 0.0, height: 0.0, enableInsets: true)
+            return view
         } else {
             return nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 2 {
+            return 45.0
+        } else {
+            return 0.0
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.section {
+        case 0:
+            return UITableView.automaticDimension
+        case 1:
+            return UITableView.automaticDimension
+        default:
+            return 90.0
         }
     }
 
@@ -87,19 +122,21 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let browseCell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.browseTableCell, for: indexPath)
-        let skusCell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.skusTableCell, for: indexPath)
-        let recentCell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.recentItemBrowseCell, for: indexPath)
-        if indexPath.section == 0 {
+        switch indexPath.section {
+        case 0:
+            let browseCell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.browseTableCell, for: indexPath)
             browseCell.textLabel?.text = browseTypes[indexPath.row]
+            tableView.separatorStyle = .singleLine
             return browseCell
-        } else if indexPath.section == 1 {
-            browseCell.textLabel?.text = "SKUs"
+        case 1:
+            let skusCell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.skusTableCell, for: indexPath)
+            skusCell.textLabel?.text = "SKUs"
             return skusCell
-        } else {
+        default:
+            let recentCell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.recentItemBrowseCell, for: indexPath) as! ItemTableCell
             let item = recentItems[indexPath.row]
-            recentCell.textLabel?.text = "\(item.manufacturer) \(item.details)"
-            recentCell.detailTextLabel?.text = "\(item.SKU) - \(item.category.name)"
+            recentCell.item = item
+            tableView.separatorStyle = .none
             return recentCell
         }
     

@@ -69,6 +69,29 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
         picker.dismiss(animated: true, completion: nil)
     }
     
+    func showImagePicker() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.modalPresentationStyle = .popover
+        imagePicker.delegate = self
+        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else { return }
+        let imageView = (tableView.cellForRow(at: lastSelectedIndex) as! EditCategoryTableViewCell).quantityTextField
+        imagePicker.popoverPresentationController?.sourceView = imageView
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func showImageAlert(forCategoryID categoryID: Int) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Change category image", style: .default, handler: { (_) in
+            self.showImagePicker()
+        }))
+        alert.addAction(UIAlertAction(title: "Delete category image", style: .destructive, handler: { (_) in
+            self.categoryImages.removeValue(forKey: categoryID)
+            self.tableView.reloadRows(at: [self.lastSelectedIndex], with: .automatic)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
     //MARK: Delegate Methods
     
     func categoryChanged(name: String, minQty: Int?, indexPath: IndexPath) {
@@ -78,13 +101,14 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
     
     func imageViewTapped(atIndexPath indexPath: IndexPath) {
         lastSelectedIndex = indexPath
-        let imagePicker = UIImagePickerController()
-        imagePicker.modalPresentationStyle = .popover
-        imagePicker.delegate = self
-        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else { return }
-        let imageView = (tableView.cellForRow(at: indexPath) as! EditCategoryTableViewCell).quantityTextField
-        imagePicker.popoverPresentationController?.sourceView = imageView
-        present(imagePicker, animated: true, completion: nil)
+        let categoryID = categories[indexPath.row].id
+        if let _ = categoryImages[categoryID] {
+            showImageAlert(forCategoryID: categoryID)
+        } else {
+            showImagePicker()
+        }
+        
+        
     }
     
     //MARK: Cell configuration

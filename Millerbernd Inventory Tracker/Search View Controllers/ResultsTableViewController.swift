@@ -23,12 +23,18 @@ class ResultsTableViewController: UITableViewController, UISearchResultsUpdating
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView.register(ResultsTableViewCell.self, forCellReuseIdentifier: PropertyKeys.resultsTableCell)
+        tableView.separatorStyle = .none
+        self.tableView.register(ItemTableCell.self, forCellReuseIdentifier: PropertyKeys.resultsTableCell)
         
         updateItems()
         NotificationCenter.default.addObserver(self, selector: #selector(updateItems), name: ItemController.itemsUpdatedNotification, object: nil)
 
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        tableView.reloadData()
     }
     
     //MARK: Methods
@@ -62,16 +68,20 @@ class ResultsTableViewController: UITableViewController, UISearchResultsUpdating
     
     //MARK: Cell configuration
     
-    func configure(_ cell: ResultsTableViewCell, atIndexPath: IndexPath) {
+    func configure(_ cell: ItemTableCell, atIndexPath: IndexPath) {
+        guard atIndexPath.row < filteredItems.count else {return}
         let item = filteredItems[atIndexPath.row]
-        cell.textLabel?.text = "\(item.manufacturer) \(item.details)"
-        cell.detailTextLabel?.text = "\(item.SKU) - \(item.category.name)"
+        cell.item = item
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 90.0
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -80,7 +90,7 @@ class ResultsTableViewController: UITableViewController, UISearchResultsUpdating
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.resultsTableCell, for: indexPath) as! ResultsTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.resultsTableCell, for: indexPath) as! ItemTableCell
 
         configure(cell, atIndexPath: indexPath)
 

@@ -20,10 +20,16 @@ class ItemListTableViewController: UITableViewController {
         super.viewDidLoad()
         
         title = filterItem
+        tableView.separatorStyle = .none
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateItemQuantities), name: ItemController.itemsUpdatedNotification, object: nil)
         
         updateUI()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        tableView.reloadData()
     }
     
     //MARK: Methods
@@ -69,10 +75,9 @@ class ItemListTableViewController: UITableViewController {
     
     //MARK: Cell Configuration
     
-    func configure(_ cell: UITableViewCell, atIndexPath: IndexPath) {
+    func configure(_ cell: ItemTableCell, atIndexPath: IndexPath) {
         let item = items[atIndexPath.row]
-        cell.textLabel?.text = "\(item.manufacturer) \(item.details)"
-        cell.detailTextLabel?.text = "\(item.SKU) - \(item.category.name)"
+        cell.item = item
     }
     
     func configureSummary(_ cell: UITableViewCell, atIndexPath: IndexPath) {
@@ -98,13 +103,21 @@ class ItemListTableViewController: UITableViewController {
             return 1
         }
     }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return 90.0
+        } else {
+            return 44.0
+        }
+    }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         switch indexPath.section {
         case 0:
-            let cell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.itemListTableCell, for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: PropertyKeys.itemListTableCell, for: indexPath) as! ItemTableCell
             configure(cell, atIndexPath: indexPath)
             return cell
         default:
