@@ -22,7 +22,7 @@ class EmployeeNumberTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        employeeTextField.keyboardType = .numberPad
+        employeeTextField.autocapitalizationType = .words
     }
 
     

@@ -37,7 +37,7 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 1 {
-            let id = categories.last!.id + 1
+            let id = categories.count > 0 ? categories.last!.id + 1 : 1
             categories.append(Category(id: id, name: "", minimumStockLevel: nil))
             let lastRow = categories.count - 1
             tableView.insertRows(at: [IndexPath(row: lastRow, section: 0)], with: UITableView.RowAnimation.automatic)
@@ -55,6 +55,7 @@ class EditCategoryTableViewController: UITableViewController, EditCategoryCellDe
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             guard let items = ItemController.shared.items(byCategoryID: categories[indexPath.row].id) else {
+                categoryImages.removeValue(forKey: categories[indexPath.row].id)
                 categories.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .fade)
                 return

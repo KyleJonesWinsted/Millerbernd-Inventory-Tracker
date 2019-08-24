@@ -16,6 +16,7 @@ class BrowseTableViewController: UITableViewController, UISplitViewControllerDel
     var recentItems = [Item]() {
         didSet {
             let newCount = recentItems.count
+            guard newCount > 0 else {return}
             let newItem = recentItems[0]
             if oldValue.count != newCount || (oldValue[0].SKU == newItem.SKU && oldValue[0].totalQuantity != newItem.totalQuantity) {
                  self.tableView.reloadSections(IndexSet(integer: 2), with: .automatic)

@@ -94,7 +94,7 @@ class AddNewItemTableViewController: UITableViewController, SelectCategoryTableD
     }
     
     func setupTextFields() {
-        descriptionTextField.autocapitalizationType = .allCharacters
+        descriptionTextField.autocapitalizationType = .words
         manufacturerTextField.autocapitalizationType = .words
         descriptionTextField.autocorrectionType = .no
         manufacturerTextField.autocorrectionType = .no

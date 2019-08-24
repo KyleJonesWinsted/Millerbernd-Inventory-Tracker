@@ -155,7 +155,7 @@ class ItemController {
     }
     
     func addNew(item: Item) {
-        itemsBySKU[item.SKU] = item
+        itemsBySKU[item.SKU] = adjustQuantities(for: item)
         process(Array(itemsBySKU.values))
     }
     
